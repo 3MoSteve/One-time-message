@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/css/datenschutz.css">
+    <title><%= translations.title %></title>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <a href="/" class="logo">One-Time Message</a>
+            <div class="nav-links">
+                <a href="/" class="nav-item">Home</a>
+                
+            </div>
+        </div>
+    </nav>
+    <select name="lang" id="lang">
+        <option value="en">Englisch</option>
+        <option value="de">Deutsch</option>
+    </select>
+    <div class="content">
+        <div class="section">
+            <h2 class="section-title"><%= translations.title %></h2>
+            <p class="section-message"><%= translations.privacyMessage %></p>
+        </div>
+
+        <div class="section">
+            <h2 class="section-title"><%= translations.sectionTitles.cookies %></h2>
+            <p class="section-message"><%= translations.cookiesMessage %></p>
+        </div>
+
+        <div class="section">
+            <h2 class="section-title"><%= translations.sectionTitles.contact %></h2>
+            <p class="section-message"><%= translations.contactMessage %></p>
+        </div>
+
+        <div class="section">
+            <h2 class="section-title"><%= translations.sectionTitles.security %></h2>
+            <p class="section-message"><%= translations.securityMessage %></p>
+        </div>
+
+        <div class="section">
+            <h2 class="section-title"><%= translations.sectionTitles.transfer %></h2>
+            <p class="section-message"><%= translations.dataTransferMessage %></p>
+        </div>
+
+        <div class="section">
+            <h2 class="section-title"><%= translations.sectionTitles.accessRights %></h2>
+            <p class="section-message"><%= translations.accessRightsMessage %></p>
+        </div>
+
+        <div class="section">
+            <h2 class="section-title"><%= translations.sectionTitles.minimization %></h2>
+            <p class="section-message"><%= translations.dataMinimizationMessage %></p>
+        </div>
+
+        <div class="section">
+            <h2 class="section-title"><%= translations.sectionTitles.policyChanges %></h2>
+            <p class="section-message"><%= translations.policyChangesMessage %></p>
+        </div>
+
+        <div class="section">
+            <h2 class="section-title"><%= translations.sectionTitles.legalBasis %></h2>
+            <p class="section-message"><%= translations.legalBasisMessage %></p>
+        </div>
+
+        <div class="section">
+            <h2 class="section-title"><%= translations.sectionTitles.anonymity %></h2>
+            <p class="section-message"><%= translations.anonymityMessage %></p>
+        </div>
+    </div>
+    <script>
+        function change(e) {
+            location.href = (`/privacy?lang=${e.target.value}`);
+        }
+        document.addEventListener("DOMContentLoaded", (e) => {
+            let dd = document.querySelector("#lang");
+            dd.onchange = (e) => change(e);
+            dd.value = location.href.includes("?lang=de") ? "de" : "en";
+        })
+    </script>
+</body>
+</html>

@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>One-Time Message</title>
+    <link rel="stylesheet" href="/css/home.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.2/rollups/aes.js"></script>
+</head>
+<body>
+
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="container">
+            <a href="/" class="logo">One-Time Message</a>
+            <div class="nav-links">
+                <a href="/" class="nav-item">Home</a>
+                <a href="/privacy" class="nav-item">Privacy Policy</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Section -->
+    <div class="main">
+        <h1 class="title">One-Time Message</h1>
+        <p class="description">Write a message, generate a one-time link, and share it securely.</p>
+
+        <form id="messageForm" class="message-form">
+            <textarea id="message" class="message-box" rows="5" placeholder="Write your message..."></textarea>
+            <button type="submit" class="generate-btn">Generate Link</button>
+        </form>
+
+        <div id="result" class="result hidden">
+            <p>Kopiere den Link und sende ihn wem du möchtest. Die erstellte Nachricht wird gelöscht, nachdem sie das erste Mal geöffnet wurde.</p>
+            <input type="text" id="linkInput" class="link-input" readonly>
+            <div class="button-group">
+                <button class="btn" onclick="openTelegram()">Telegram</button>
+                <button class="btn" onclick="openWhatsApp()">WhatsApp</button>
+                <button class="btn" onclick="copyLink()">COPY LINK</button>
+            </div>
+        </div>
+        
+    </div>
+
+    <div class="info-section">
+        <h2>What is One-Time Message?</h2>
+        <p>This website allows you to send messages that can only be read once. After they are opened, they are deleted from the server, ensuring your privacy and security.</p>
+        <img src="/imgs/guy.svg" alt="Welcome" class="welcome-image">
+    </div>
+
+    <div class="feature-boxes">
+        <div class="feature-box">
+            <h3>Encryption</h3>
+            <p>All messages are encrypted for maximum security.</p>
+        </div>
+        <div class="feature-box">
+            <h3>Safety</h3>
+            <p>Your data is never stored or shared with third parties.</p>
+        </div>
+        <div class="feature-box">
+            <h3>Anonymity</h3>
+            <p>Send messages without revealing your identity.</p>
+        </div>
+        <div class="feature-box">
+            <h3>User-Friendly</h3>
+            <p>Simple interface to send and receive messages easily.</p>
+        </div>
+        <div class="feature-box">
+            <h3>One-Time Access</h3>
+            <p>Messages are deleted after they are opened once.</p>
+        </div>
+        <div class="feature-box">
+            <h3>Responsive Design</h3>
+            <p>Accessible on any device, anytime, anywhere.</p>
+        </div>
+    </div>
+
+    <script>
+
+        function enc (inp) {
+            let sec = String(Math.floor(Math.random() * 999999999)+1000000 + Math.random().toString(36).slice(2) + Date.now());
+            let msg = CryptoJS.AES.encrypt(inp, sec).toString();
+            return {sec, msg};
+        }
+        // function copyLink() {
+        //     let ll = document.getElementById("link");
+        //     let ld= document.getElementById("linko").textContent;
+        //     navigator.clipboard.writeText(ld).then(() => {
+        //         document.getElementById("result").classList.add("hidden");
+        //     }).catch(e => {
+        //         ll.textContent=ld;
+        //     });
+        // }
+        function copyToClipboard(text) {
+    if (!navigator.clipboard) {
+        // Fallback method for older browsers
+        const textarea = document.getElementById("linkInput");
+        textarea.select();
+        document.execCommand("copy");
+    } else {
+        // Use the Clipboard API for modern browsers
+        navigator.clipboard.writeText(text)
+            .then(() => {
+                console.log("Copied to clipboard successfully!");
+            })
+            .catch(err => {
+                console.error("Failed to copy: ", err);
+            });
+    }
+}
+        function copyLink() {
+    let linkInput = document.getElementById("linkInput");
+    copyToClipboard(linkInput.value);
+}
+
+function openTelegram() {
+    let linkInput = document.getElementById("linkInput").value;
+    window.open(`https://t.me/share/url?url=${encodeURIComponent(linkInput)}`, '_blank');
+}
+
+function openWhatsApp() {
+    let linkInput = document.getElementById("linkInput").value;
+    window.open(`https://wa.me/?text=${encodeURIComponent(linkInput)}`, '_blank');
+}
+
+// Inside your fetch response handling
+
+
+        document.getElementById('messageForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const messageEl = document.getElementById('message');
+            const message = messageEl.value;
+            let passValue = document.querySelector("#password")?.value;
+            messageEl.value = "";
+            let en = enc(message);
+            const response = await fetch('/message', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: `message=${en.msg}&id=${en.sec}`
+            });
+            const data = await response.json();
+            
+document.getElementById('linkInput').value = data.link;            
+document.getElementById('result').classList.remove('hidden');
+        });
+    </script>
+
+</body>
+</html>
